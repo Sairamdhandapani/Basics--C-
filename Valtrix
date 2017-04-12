@@ -1,0 +1,52 @@
+#include<iostream>
+#define SIZE 10
+using namespace std;
+bool map[SIZE][SIZE], F;
+long long f[1 << SIZE][SIZE], red = 0;
+int main()
+{
+	int a , b, i, j, k, l, p, q;
+	cout << "Enter number of vertices: ";
+	cin >> a;
+	cout << "Enter number of edges: ";
+	cin >> b;
+	for (i = 0; i < b; i++)
+	{
+		cout << "Enter source vertex of an edge: ";
+		cin >> p;
+		cout << "Enter destination vertex of an edge: ";
+		cin >>q ;
+		p--;
+		q--;
+		if (p > q)
+			swap(p, q);
+		map[p][q] = map[q][p] = 1;
+		f[(1 << p) + (1 << q)][q] = 1;
+	}
+	for (i = 7; i < (1 << a); i++)
+	{
+		F = 1;
+		for (j = 0; j < a; j++)
+		{
+			if (i & (1 << j) && f[i][j] == 0)
+			{
+				if (F)
+				{
+					F = 0;
+					k = j;
+					continue;
+				}
+				for (l = k + 1; l < a; l++)
+				{
+					if (i & (1 << l) && map[j][l])
+						f[i][j] += f[i - (1 << j)][l];
+				}
+				if (map[k][j])
+					red += f[i][j];
+			}
+		}
+	}
+	cout << "total Cycles: " << red / 2 << endl;
+	return 0;
+}
+
